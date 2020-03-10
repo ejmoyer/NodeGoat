@@ -16,6 +16,10 @@ function UserDAO(db) {
 
     this.addUser = function(userName, firstName, lastName, password, email, callback) {
 
+        //Password hash
+        var salt = bcrypt.genSaltSync();
+        var passwordHash = bcrypt.hashSync(password, salt);
+
         // Create user document
         var user = {
             userName: userName,
