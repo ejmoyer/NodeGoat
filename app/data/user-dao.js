@@ -26,7 +26,7 @@ function UserDAO(db) {
             firstName: firstName,
             lastName: lastName,
             benefitStartDate: this.getRandomFutureDate(),
-            password: bcrypt.hashSync(password, bcrypt.genSaltSync())//received from request param
+            password: passwordHash //received from request param
 
             // Fix for A2-1 - Broken Auth
             // Stores password  in a safer way using one way encryption and salt hashing
@@ -82,14 +82,20 @@ function UserDAO(db) {
             if (err) return callback(err, null);
 
             if (user) {
-                if (comparePassword(password, user.password)) {
+              if (bcrypt.compareSync(password, user.password)) {
+                callback(null, user);
+              } else {
+                callback(invalidPasswordError, null);
+              }
+
+                /* if (comparePassword(password, user.password)) {
                     callback(null, user);
                 } else {
                     var invalidPasswordError = new Error("Invalid password");
                     // Set an extra field so we can distinguish this from a db error
                     invalidPasswordError.invalidPassword = true;
                     callback(invalidPasswordError, null);
-                }
+                } */
             } else {
                 var noSuchUserError = new Error("User: " + user + " does not exist");
                 // Set an extra field so we can distinguish this from a db error
