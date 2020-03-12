@@ -4,6 +4,7 @@ var express = require("express");
 var favicon = require("serve-favicon");
 var bodyParser = require("body-parser");
 var session = require("express-session");
+var cookieParser = require("cookie-parser");
 // var csrf = require('csurf');
 var consolidate = require("consolidate"); // Templating library adapter for Express
 var swig = require("swig");
@@ -77,11 +78,13 @@ MongoClient.connect(config.db, function(err, db) {
     }));
 
     // Enable session management using express middleware
+    app.use(cookieParser());
+
     app.use(session({
         // genid: function(req) {
         //    return genuuid() // use UUIDs for session IDs
         //},
-        secret: config.cookieSecret,
+        secret: "s3Cur3",
         // Both mandatory in Express v4
         saveUninitialized: true,
         resave: true,
